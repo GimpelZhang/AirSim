@@ -49,10 +49,11 @@ void ASimModeCar::continueForTime(double seconds)
 void ASimModeCar::setupClockSpeed()
 {
     current_clockspeed_ = getSettings().clock_speed;
-
+    float printout = getSettings().clock_speed;
     //setup clock in PhysX
     UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
     UAirBlueprintLib::LogMessageString("Clock Speed: ", std::to_string(current_clockspeed_), LogDebugLevel::Informational);
+    UE_LOG(LogTemp,Display,TEXT("*******check point 3: %f"),printout);
 }
 
 void ASimModeCar::Tick(float DeltaSeconds)

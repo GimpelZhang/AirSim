@@ -44,6 +44,7 @@ void ASimModeWorldMultiRotor::setupClockSpeed()
     if (clock_type == "ScalableClock") {
         //scalable clock returns interval same as wall clock but multiplied by a scale factor
         ClockFactory::get(std::make_shared<msr::airlib::ScalableClock>(clock_speed == 1 ? 1 : 1 / clock_speed));
+        UE_LOG(LogTemp,Display,TEXT("*******check point 3: %f"),clock_speed);
     }
     else if (clock_type == "SteppableClock") {
         //steppable clock returns interval that is a constant number irrespective of wall clock
