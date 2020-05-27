@@ -44,7 +44,7 @@ void ASimModeWorldMultiRotor::setupClockSpeed()
     if (clock_type == "ScalableClock") {
         //scalable clock returns interval same as wall clock but multiplied by a scale factor
         ClockFactory::get(std::make_shared<msr::airlib::ScalableClock>(clock_speed == 1 ? 1 : 1 / clock_speed));
-        UE_LOG(LogTemp,Display,TEXT("*******check point 3: %f"),clock_speed);
+        UE_LOG(LogTemp,Display,TEXT("*******check point 3_1: %f"),clock_speed);
     }
     else if (clock_type == "SteppableClock") {
         //steppable clock returns interval that is a constant number irrespective of wall clock
@@ -59,6 +59,7 @@ void ASimModeWorldMultiRotor::setupClockSpeed()
         //static_cast<msr::airlib::TTimeDelta>(getPhysicsLoopPeriod() * 1E-9 * clock_speed)));
 
         //Approach 2: scale control loop frequency if clock is speeded up
+        UE_LOG(LogTemp,Display,TEXT("*******check point 3_2: %f"),clock_speed);
         if (clock_speed >= 1) {
             ClockFactory::get(std::make_shared<msr::airlib::SteppableClock>(
                 static_cast<msr::airlib::TTimeDelta>(getPhysicsLoopPeriod() * 1E-9))); //no clock_speed multiplier
