@@ -86,6 +86,9 @@ include_directories(
 add_library(airsim_settings_parser src/airsim_settings_parser.cpp)
 target_link_libraries(airsim_settings_parser ${catkin_LIBRARIES} AirLib)
 
+add_library(airsim_car_settings_parser src/airsim_car_settings_parser.cpp)
+target_link_libraries(airsim_car_settings_parser ${catkin_LIBRARIES} AirLib)
+
 add_library(pd_position_controller_simple src/pd_position_controller_simple.cpp)
 add_dependencies(pd_position_controller_simple ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(pd_position_controller_simple ${catkin_EXPORTED_TARGETS})
@@ -94,8 +97,15 @@ add_library(airsim_ros src/airsim_ros_wrapper.cpp)
 add_dependencies(airsim_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(airsim_ros ${catkin_LIBRARIES} ${OpenCV_LIBS} yaml-cpp AirLib airsim_settings_parser)
 
+add_library(airsim_car_ros src/airsim_car_ros_wrapper.cpp)
+add_dependencies(airsim_car_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(airsim_car_ros ${catkin_LIBRARIES} ${OpenCV_LIBS} yaml-cpp AirLib airsim_car_settings_parser)
+
 add_executable(airsim_node src/airsim_node.cpp)
 target_link_libraries(airsim_node airsim_ros ${catkin_LIBRARIES} AirLib)
+
+add_executable(airsim_car_node src/airsim_car_node.cpp)
+target_link_libraries(airsim_car_node airsim_car_ros ${catkin_LIBRARIES} AirLib)
 
 add_executable(pd_position_controller_simple_node src/pd_position_controller_simple_node.cpp)
 target_link_libraries(pd_position_controller_simple_node pd_position_controller_simple airsim_ros ${catkin_LIBRARIES} AirLib)
@@ -109,6 +119,7 @@ install(TARGETS
 install(TARGETS 
     #list of shared libraries
     airsim_ros
+    airsim_car_ros
     pd_position_controller_simple
     ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
     LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}

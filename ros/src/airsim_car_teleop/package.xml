@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>airsim_car_teleop</name>
+  <version>1.0.0</version>
+  <description>
+    Provides teleoperation using keyboard for airsim car models.
+  </description>
+  <license>BSD</license>
+  <author>Junchuan Zhang</author>
+  <author email="zhangjunchuan@sineva.com">Junchuan Zhang</author>
+  <maintainer email="zhangjunchuan@sineva.com">Junchuan Zhang</maintainer>
+  <url type="repository"></url>
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>airsim_ros_pkgs</build_depend>
+  <exec_depend>airsim_ros_pkgs</exec_depend>
+  <depend>rospy</depend>
+  <depend>geometry_msgs</depend>
+</package>
