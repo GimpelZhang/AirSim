@@ -1,7 +1,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "SimMode/SimModeBase.h"
 #include "CarPawn.h"
 #include "common/Common.hpp"

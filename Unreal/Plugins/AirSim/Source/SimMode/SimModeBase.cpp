@@ -259,7 +259,14 @@ void ASimModeBase::setupClockSpeed()
 void ASimModeBase::setupPhysicsLoopPeriod()
 {
 }
-
+long long ASimModeBase::getPhysicsLoopPeriod() const //nanoseconds
+{
+    return physics_loop_period_;
+}
+void ASimModeBase::setPhysicsLoopPeriod(long long  period)
+{
+    physics_loop_period_ = period;
+}
 void ASimModeBase::Tick(float DeltaSeconds)
 {
     if (isRecording())

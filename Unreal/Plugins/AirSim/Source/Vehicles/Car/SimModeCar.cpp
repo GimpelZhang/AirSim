@@ -5,6 +5,7 @@
 #include "common/AirSimSettings.hpp"
 #include "CarPawnSimApi.h"
 #include "AirBlueprintLib.h"
+#include "common/ClockFactory.hpp"
 #include "common/Common.hpp"
 #include "common/EarthUtils.hpp"
 #include "vehicles/car/api/CarRpcLibServer.hpp"
@@ -35,7 +36,7 @@ void ASimModeCar::pause(bool is_paused)
         current_clockspeed_ = 0;
     else
         current_clockspeed_ = getSettings().clock_speed;
-
+    UE_LOG(LogTemp,Display,TEXT("*******check point 1 pre:"));
     UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
 }
 
