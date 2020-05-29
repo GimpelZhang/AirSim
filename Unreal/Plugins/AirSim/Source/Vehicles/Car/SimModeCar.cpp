@@ -16,13 +16,25 @@ void ASimModeCar::BeginPlay()
     Super::BeginPlay();
 
     initializePauseState();
+    initializeForPlay();
 }
+void ASimModeCar::initializeForPlay()
+{
+    std::vector<msr::airlib::UpdatableObject*> vehicles;
+    for (auto& api : getApiProvider()->getVehicleSimApis())
+        vehicles.push_back(api);
+    //TODO: directly accept getVehicleSimApis() using generic container
 
+    std::unique_ptr<PhysicsEngineBase> physics_engine = createPhysicsEngine();
+    physics_engine_ = physics_engine.get();
+    physics_world_.reset(new msr::airlib::PhysicsWorld(std::move(physics_engine),
+        vehicles, getPhysicsLoopPeriod()));
+}
 void ASimModeCar::initializePauseState()
 {
     pause_period_ = 0;
     pause_period_start_ = 0;
-    pause(false);
+    //pause(false);
 }
 
 bool ASimModeCar::isPaused() const

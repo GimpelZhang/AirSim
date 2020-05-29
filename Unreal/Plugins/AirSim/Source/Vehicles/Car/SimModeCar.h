@@ -2,9 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "SimMode/SimModeBase.h"
+#include "SimMode/SimModeWorldBase.h"
 #include "CarPawn.h"
 #include "common/Common.hpp"
 #include "api/VehicleSimApiBase.hpp"
+
+#include "physics/FastPhysicsEngine.hpp"
+#include "physics/World.hpp"
+#include "physics/PhysicsWorld.hpp"
+#include "common/StateReporterWrapper.hpp"
+#include "api/ApiServerBase.hpp"
+
 #include "SimModeCar.generated.h"
 
 
@@ -47,7 +55,8 @@ protected:
         const PawnSimApi::Params& pawn_sim_api_params) const override;
     virtual msr::airlib::VehicleApiBase* getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,
         const PawnSimApi* sim_api) const override;
-
+    //should be called by derived class once all api_provider_ is ready to use
+    void initializeForPlay();
 private:
     std::atomic<float> current_clockspeed_;
     std::atomic<TTimeDelta> pause_period_;
