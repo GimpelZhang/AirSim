@@ -1,13 +1,21 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 #include "SimModeCar.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "Logging/MessageLog.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include <exception>
 #include "AirBlueprintLib.h"
 #include "common/AirSimSettings.hpp"
+//#include "vehicles/multirotor/api/MultirotorApiBase.hpp"
 #include "CarPawnSimApi.h"
-#include "AirBlueprintLib.h"
+#include "physics/PhysicsBody.hpp"
 #include "common/ClockFactory.hpp"
-#include "common/Common.hpp"
 #include "common/EarthUtils.hpp"
+#include "common/Common.hpp"
+#include <memory>
 #include "vehicles/car/api/CarRpcLibServer.hpp"
 
 
@@ -15,7 +23,7 @@ void ASimModeCar::BeginPlay()
 {
     Super::BeginPlay();
 
-    initializePauseState();
+    //let base class setup physics world
     initializeForPlay();
 }
 void ASimModeCar::initializeForPlay()
@@ -30,45 +38,125 @@ void ASimModeCar::initializeForPlay()
     physics_world_.reset(new msr::airlib::PhysicsWorld(std::move(physics_engine),
         vehicles, getPhysicsLoopPeriod()));
 }
-void ASimModeCar::initializePauseState()
+void ASimModeCar::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    pause_period_ = 0;
-    pause_period_start_ = 0;
-    //pause(false);
+    //remove everything that we created in BeginPlay
+    physics_world_.reset();
+    //stop physics thread before we dismantle
+    //stopAsyncUpdator();
+
+    Super::EndPlay(EndPlayReason);
+}
+void ASimModeCar::startAsyncUpdator()
+{
+    physics_world_->startAsyncUpdator();
+}
+
+void ASimModeCar::stopAsyncUpdator()
+{
+    physics_world_->stopAsyncUpdator();
+}
+
+long long ASimModeCar::getPhysicsLoopPeriod() const //nanoseconds
+{
+    return physics_loop_period_;
+}
+void ASimModeCar::setPhysicsLoopPeriod(long long  period)
+{
+    physics_loop_period_ = period;
+}
+std::unique_ptr<ASimModeCar::PhysicsEngineBase> ASimModeCar::createPhysicsEngine()
+{
+    std::unique_ptr<PhysicsEngineBase> physics_engine;
+    std::string physics_engine_name = getSettings().physics_engine_name;
+    if (physics_engine_name == "")
+        physics_engine.reset(); //no physics engine
+    else if (physics_engine_name == "FastPhysicsEngine") {
+        msr::airlib::Settings fast_phys_settings;
+        if (msr::airlib::Settings::singleton().getChild("FastPhysicsEngine", fast_phys_settings)) {
+            physics_engine.reset(new msr::airlib::FastPhysicsEngine(fast_phys_settings.getBool("EnableGroundLock", true)));
+        }
+        else {
+            physics_engine.reset(new msr::airlib::FastPhysicsEngine());
+        }
+    }
+    else {
+        physics_engine.reset();
+        UAirBlueprintLib::LogMessageString("Unrecognized physics engine name: ",  physics_engine_name, LogDebugLevel::Failure);
+    }
+
+    return physics_engine;
 }
 
 bool ASimModeCar::isPaused() const
 {
-    return current_clockspeed_ == 0;
+    return physics_world_->isPaused();
 }
 
 void ASimModeCar::pause(bool is_paused)
 {
-    if (is_paused)
-        current_clockspeed_ = 0;
-    else
-        current_clockspeed_ = getSettings().clock_speed;
-    UE_LOG(LogTemp,Display,TEXT("*******check point 1 pre:"));
-    UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
+    physics_world_->pause(is_paused);
+    UGameplayStatics::SetGamePaused(this->GetWorld(), is_paused);
 }
 
 void ASimModeCar::continueForTime(double seconds)
 {
-    pause_period_start_ = ClockFactory::get()->nowNanos();
-    pause_period_ = seconds;
-    pause(false);
+    if(physics_world_->isPaused())
+    {
+        physics_world_->pause(false);
+        UGameplayStatics::SetGamePaused(this->GetWorld(), false);        
+    }
+
+    physics_world_->continueForTime(seconds);
+    while(!physics_world_->isPaused())
+    {
+        continue; 
+    }
+    UGameplayStatics::SetGamePaused(this->GetWorld(), true);
 }
 
+void ASimModeCar::updateDebugReport(msr::airlib::StateReporterWrapper& debug_reporter)
+{
+    unused(debug_reporter);
+    //we use custom debug reporting for this class
+}
+
+void ASimModeCar::Tick(float DeltaSeconds)
+{
+    { //keep this lock as short as possible
+        physics_world_->lock();
+
+        physics_world_->enableStateReport(EnableReport);
+        physics_world_->updateStateReport();
+
+        for (auto& api : getApiProvider()->getVehicleSimApis())
+            api->updateRenderedState(DeltaSeconds);
+
+        physics_world_->unlock();
+    }
+
+    //perform any expensive rendering update outside of lock region
+    for (auto& api : getApiProvider()->getVehicleSimApis())
+        api->updateRendering(DeltaSeconds);
+
+    Super::Tick(DeltaSeconds);
+}
+
+void ASimModeCar::reset()
+{
+    UAirBlueprintLib::RunCommandOnGameThread([this]() {
+        physics_world_->reset();
+    }, true);
+    
+    //no need to call base reset because of our custom implementation
+}
+
+std::string ASimModeCar::getDebugReport()
+{
+    return physics_world_->getDebugReport();
+}
 void ASimModeCar::setupClockSpeed()
 {
-    /* Solution 1: 
-    float current_clockspeed_ = getSettings().clock_speed;
-    float printout = getSettings().clock_speed;
-    //setup clock in PhysX
-    UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
-    UAirBlueprintLib::LogMessageString("Clock Speed: ", std::to_string(current_clockspeed_), LogDebugLevel::Informational);
-    UE_LOG(LogTemp,Display,TEXT("*******check point 3: %f"),printout);*/
-    /* Solution 2: */
     typedef msr::airlib::ClockFactory ClockFactory;
 
     float clock_speed = getSettings().clock_speed;
@@ -110,21 +198,6 @@ void ASimModeCar::setupClockSpeed()
     else
         throw std::invalid_argument(common_utils::Utils::stringf(
             "clock_type %s is not recognized", clock_type.c_str()));
-    
-}
-
-void ASimModeCar::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-    
-    if (pause_period_start_ > 0) {
-        if (ClockFactory::get()->elapsedSince(pause_period_start_) >= pause_period_) {
-            if (!isPaused())
-                pause(true);
-
-            pause_period_start_ = 0;
-        }
-    }
 }
 
 //-------------------------------- overrides -----------------------------------------------//
@@ -181,7 +254,8 @@ std::unique_ptr<PawnSimApi> ASimModeCar::createVehicleSimApi(
     auto vehicle_sim_api = std::unique_ptr<PawnSimApi>(new CarPawnSimApi(pawn_sim_api_params, 
         vehicle_pawn->getKeyBoardControls(), vehicle_pawn->getVehicleMovementComponent()));
     vehicle_sim_api->initialize();
-    vehicle_sim_api->reset();
+    //For multirotors the vehicle_sim_api are in PhysicsWOrld container and then get reseted when world gets reseted
+    //vehicle_sim_api->reset();
     return vehicle_sim_api;
 }
 msr::airlib::VehicleApiBase* ASimModeCar::getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,
