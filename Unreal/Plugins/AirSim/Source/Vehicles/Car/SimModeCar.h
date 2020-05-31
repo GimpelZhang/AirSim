@@ -33,6 +33,8 @@ public:
     virtual void pause(bool is_paused) override;
     virtual void continueForTime(double seconds) override;
 
+    virtual void pause_physx(bool is_paused);
+
 protected: //overrides
     void startAsyncUpdator();
     void stopAsyncUpdator();

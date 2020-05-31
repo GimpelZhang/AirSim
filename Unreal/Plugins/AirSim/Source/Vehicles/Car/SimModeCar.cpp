@@ -97,14 +97,25 @@ void ASimModeCar::pause(bool is_paused)
 {
     physics_world_->pause(is_paused);
     UGameplayStatics::SetGamePaused(this->GetWorld(), is_paused);
+    pause_physx(true);
 }
-
+void ASimModeCar::pause_physx(bool is_paused)
+{
+    float current_clockspeed_;
+    if (is_paused)
+        current_clockspeed_ = 0;
+    else
+        current_clockspeed_ = getSettings().clock_speed;
+    UE_LOG(LogTemp,Display,TEXT("*******check point pause:"));
+    UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
+}
 void ASimModeCar::continueForTime(double seconds)
 {
     if(physics_world_->isPaused())
     {
         physics_world_->pause(false);
         UGameplayStatics::SetGamePaused(this->GetWorld(), false);        
+        pause_physx(false);
     }
 
     physics_world_->continueForTime(seconds);
@@ -161,6 +172,11 @@ void ASimModeCar::setupClockSpeed()
 
     float clock_speed = getSettings().clock_speed;
 
+    float printout = getSettings().clock_speed;
+    //setup clock in PhysX
+    UAirBlueprintLib::setUnrealClockSpeed(this, clock_speed);
+    UAirBlueprintLib::LogMessageString("Clock Speed: ", std::to_string(clock_speed), LogDebugLevel::Informational);
+    UE_LOG(LogTemp,Display,TEXT("*******check point 3: %f"),printout);
     //setup clock in ClockFactory
     std::string clock_type = getSettings().clock_type;
 
