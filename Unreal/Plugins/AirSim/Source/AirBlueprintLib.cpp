@@ -192,8 +192,9 @@ void UAirBlueprintLib::setUnrealClockSpeed(const AActor* context, float clock_sp
 {
     UAirBlueprintLib::RunCommandOnGameThread([context, clock_speed]() {
         auto* world_settings = context->GetWorldSettings();
-        if (world_settings)
+        if (world_settings){
             world_settings->SetTimeDilation(clock_speed);
+            UE_LOG(LogTemp,Display,TEXT("*******check point 1: %f"),clock_speed);}
         else
             LogMessageString("Failed:", "WorldSettings was nullptr", LogDebugLevel::Failure);
     }, true);

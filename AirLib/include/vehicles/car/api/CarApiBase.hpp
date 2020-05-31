@@ -57,7 +57,7 @@ public:
         bool handbrake;
         Kinematics::State kinematics_estimated;
         uint64_t timestamp;
-
+        GeoPoint gps_location;
         CarState()
         {
         }
