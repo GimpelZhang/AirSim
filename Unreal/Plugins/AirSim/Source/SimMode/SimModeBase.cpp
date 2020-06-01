@@ -244,13 +244,11 @@ void ASimModeBase::setupClockSpeed()
     //setup clock in ClockFactory
     std::string clock_type = getSettings().clock_type;
 
-    if (clock_type == "ScalableClock"){
+    if (clock_type == "ScalableClock")
         ClockFactory::get(std::make_shared<msr::airlib::ScalableClock>(clock_speed == 1 ? 1 : 1 / clock_speed));
-        UE_LOG(LogTemp,Display,TEXT("*******check point 2_1: %f"),clock_speed);}
-    else if (clock_type == "SteppableClock"){
+    else if (clock_type == "SteppableClock")
         ClockFactory::get(std::make_shared<msr::airlib::SteppableClock>(
             static_cast<msr::airlib::TTimeDelta>(msr::airlib::SteppableClock::DefaultStepSize * clock_speed)));
-        UE_LOG(LogTemp,Display,TEXT("*******check point 2_2: %f"),clock_speed);}
     else
         throw std::invalid_argument(common_utils::Utils::stringf(
             "clock_type %s is not recognized", clock_type.c_str()));
@@ -259,14 +257,7 @@ void ASimModeBase::setupClockSpeed()
 void ASimModeBase::setupPhysicsLoopPeriod()
 {
 }
-long long ASimModeBase::getPhysicsLoopPeriod() const //nanoseconds
-{
-    return physics_loop_period_;
-}
-void ASimModeBase::setPhysicsLoopPeriod(long long  period)
-{
-    physics_loop_period_ = period;
-}
+
 void ASimModeBase::Tick(float DeltaSeconds)
 {
     if (isRecording())
