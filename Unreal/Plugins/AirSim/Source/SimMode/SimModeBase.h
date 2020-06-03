@@ -90,8 +90,6 @@ protected: //must overrides
         const PawnSimApi::Params& pawn_sim_api_params) const;
     virtual msr::airlib::VehicleApiBase* getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,
         const PawnSimApi* sim_api) const;
-    long long getPhysicsLoopPeriod() const;
-    void setPhysicsLoopPeriod(long long  period);
 
 protected: //optional overrides
     virtual void setupVehiclesAndCamera();
@@ -149,17 +147,6 @@ private:
 
     bool lidar_checks_done_ = false; 
     bool lidar_draw_debug_points_ = false;
-
-    /*
-    300Hz seems to be minimum for non-aggressive flights
-    400Hz is needed for moderately aggressive flights (such as
-    high yaw rate with simultaneous back move)
-    500Hz is recommended for more aggressive flights
-    Lenovo P50 high-end config laptop seems to be topping out at 400Hz.
-    HP Z840 desktop high-end config seems to be able to go up to 500Hz.
-    To increase freq with limited CPU power, switch Barometer to constant ref mode.
-    */
-    long long physics_loop_period_ = 3000000LL; //3ms
 
 private:
     void setStencilIDs();
