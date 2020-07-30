@@ -1568,27 +1568,27 @@ void AirsimROSWrapper::process_and_publish_img_response(const std::vector<ImageR
             image_pub_vec_[img_response_idx_internal].publish(get_depth_img_msg_from_response(curr_img_response, 
                                                     curr_ros_time, 
                                                     curr_img_response.camera_name + "_optical"));
-            //Calc camera pose
-            geometry_msgs::PoseStamped pose;
-            pose.header.stamp = make_ts(curr_img_response.time_stamp);
-            pose.header.frame_id = "world";
-            auto drone_state = multirotor_ros_vec_[multirotor_ros_index_vec_[img_response_idx_internal]].curr_drone_state;
-            Eigen::Vector3d position(drone_state.getPosition().x(), drone_state.getPosition().y(), drone_state.getPosition().z());
-            Eigen::Quaterniond attitude(drone_state.getOrientation().w(), drone_state.getOrientation().x(), 
-                drone_state.getOrientation().y(), drone_state.getOrientation().z());
-            auto cam_att = camera_extrinsic[img_response_idx_internal].first;    
-            auto cam_pos = camera_extrinsic[img_response_idx_internal].second;
-            position = position + attitude*cam_pos;
-            attitude = attitude*cam_att;
-            pose.pose.position.x = position.x();
-            pose.pose.position.y = -position.y();    
-            pose.pose.position.z = -position.z();    
+            // //Calc camera pose
+            // geometry_msgs::PoseStamped pose;
+            // pose.header.stamp = make_ts(curr_img_response.time_stamp);
+            // pose.header.frame_id = "world";
+            // auto drone_state = multirotor_ros_vec_[multirotor_ros_index_vec_[img_response_idx_internal]].curr_drone_state;
+            // Eigen::Vector3d position(drone_state.getPosition().x(), drone_state.getPosition().y(), drone_state.getPosition().z());
+            // Eigen::Quaterniond attitude(drone_state.getOrientation().w(), drone_state.getOrientation().x(), 
+            //     drone_state.getOrientation().y(), drone_state.getOrientation().z());
+            // auto cam_att = camera_extrinsic[img_response_idx_internal].first;    
+            // auto cam_pos = camera_extrinsic[img_response_idx_internal].second;
+            // position = position + attitude*cam_pos;
+            // attitude = attitude*cam_att;
+            // pose.pose.position.x = position.x();
+            // pose.pose.position.y = -position.y();    
+            // pose.pose.position.z = -position.z();    
 
-            pose.pose.orientation.w = attitude.w();    
-            pose.pose.orientation.x = attitude.x();    
-            pose.pose.orientation.y = -attitude.y();    
-            pose.pose.orientation.z = -attitude.z();    
-            image_pose_pub_vec_[img_response_idx_internal].publish(pose);
+            // pose.pose.orientation.w = attitude.w();    
+            // pose.pose.orientation.x = attitude.x();    
+            // pose.pose.orientation.y = -attitude.y();    
+            // pose.pose.orientation.z = -attitude.z();    
+            // image_pose_pub_vec_[img_response_idx_internal].publish(pose);
                                                     
         }
         // Scene / Segmentation / SurfaceNormals / Infrared
