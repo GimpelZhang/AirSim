@@ -1,3 +1,16 @@
+Modification:
+=============
+
+Using AirSim, when the user chooses the Car SimMode, the ClockSpeed setting seems it does not work well. At least when combined with the ROS node, smaller than 1.0 ClockSpeed does not provide more dense timestamps. 
+
+This repo is mainly aiming to solve this problem. Now when the ClockSpeed setting is changed, the simulation speed changes as well, as the following picture shows: 
+
+![screen_capture](https://github.com/GimpelZhang/AirSim/raw/master/docs/images/airsim_block_car_screen.png)
+
+* WARNING: Side effects by this change are not fully tested. 
+
+Well then, 
+
 # Welcome to AirSim
 
 AirSim is a simulator for drones, cars and more, built on [Unreal Engine](https://www.unrealengine.com/) (we now also have an experimental [Unity](https://unity3d.com/) release). It is open-source, cross platform, and supports hardware-in-loop with popular flight controllers such as PX4 for physically and visually realistic simulations. It is developed as an Unreal plugin that can simply be dropped into any Unreal environment. Similarly, we have an experimental release for a Unity plugin.
@@ -34,11 +47,11 @@ For complete list of changes, view our [Changelog](docs/CHANGELOG.md)
 ## How to Get It
 
 ### Windows
-* [Download binaries](https://microsoft.github.io/AirSim/use_precompiled)
+* [Download binaries](https://github.com/Microsoft/AirSim/releases)
 * [Build it](https://microsoft.github.io/AirSim/build_windows)
 
 ### Linux
-* [Download binaries](https://microsoft.github.io/AirSim/use_precompiled)
+* [Download binaries](https://github.com/Microsoft/AirSim/releases)
 * [Build it](https://microsoft.github.io/AirSim/build_linux)
 
 ### macOS
