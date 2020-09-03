@@ -1,7 +1,6 @@
 from __future__ import print_function
 import msgpackrpc #install as admin: pip install msgpack-rpc-python
 import numpy as np #pip install numpy
-import math
 
 class MsgpackMixin:
     def __repr__(self):
@@ -63,9 +62,6 @@ class Vector3r(MsgpackMixin):
     def nanVector3r():
         return Vector3r(np.nan, np.nan, np.nan)
 
-    def containsNan(self):
-        return (math.isnan(self.x_val) or math.isnan(self.y_val) or math.isnan(self.z_val))
-
     def __add__(self, other):
         return Vector3r(self.x_val + other.x_val, self.y_val + other.y_val, self.z_val + other.z_val)
 
@@ -125,9 +121,6 @@ class Quaternionr(MsgpackMixin):
     @staticmethod
     def nanQuaternionr():
         return Quaternionr(np.nan, np.nan, np.nan, np.nan)
-
-    def containsNan(self):
-        return (math.isnan(self.w_val) or math.isnan(self.x_val) or math.isnan(self.y_val) or math.isnan(self.z_val))
 
     def __add__(self, other):
         if type(self) == type(other):
@@ -213,9 +206,6 @@ class Pose(MsgpackMixin):
     @staticmethod
     def nanPose():
         return Pose(Vector3r.nanVector3r(), Quaternionr.nanQuaternionr())
-
-    def containsNan(self):
-        return (self.position.containsNan() or self.orientation.containsNan())
 
 
 class CollisionInfo(MsgpackMixin):

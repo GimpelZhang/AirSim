@@ -48,7 +48,7 @@ The default ports have changed recently, so check them closely to make sure AirS
                 "UseTcp": true,
                 "TcpPort": 4560,
                 "ControlPort": 14580,
-                "Parameters": {
+                "params": {
                     "NAV_RCL_ACT": 0,
                     "NAV_DLL_ACT": 0,
                     "LPE_LAT": 47.641468,
