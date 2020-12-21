@@ -11,6 +11,26 @@ This repo is mainly aiming to solve this problem. Now when the ClockSpeed settin
 
 Well then, 
 
+## Last announcement
+We are pleased to announce the addition of two new members to the AirSim team. They are Jonathan Marino and David Zimmermann.
+
+Jonathan and David will help the community continue to grow through AirSim, support the current version, and clarify project scope.
+
+Ending 2020, we want to thank the AirSim community and especially those who help others by sharing their knowledge and experience, and those who have helped with exciting additions this year like these:
+
+- [Python wrapper for Open AI gym interfaces.](https://github.com/microsoft/AirSim/pull/3215)
+- [Python wrapper for Event camera simulation](https://github.com/microsoft/AirSim/pull/3202)
+- [Voxel grid construction](https://github.com/microsoft/AirSim/pull/3209)
+- [Programmable camera distortion](https://github.com/microsoft/AirSim/pull/3039)
+- [Wind simulation](https://github.com/microsoft/AirSim/pull/2867)
+- [Azure development environment with documentation](https://github.com/microsoft/AirSim/pull/2816)
+- ROS wrapper for [multirotor](https://github.com/microsoft/AirSim/blob/master/docs/airsim_ros_pkgs.md) and [car](https://github.com/microsoft/AirSim/pull/2743).
+- (See all the merged pull requests from this year [here](https://github.com/microsoft/AirSim/pulls?q=is%3Apr+merged%3A%3E%3D2020-01-01))
+
+Thank you all!
+The AirSim Team
+
+
 # Welcome to AirSim
 
 AirSim is a simulator for drones, cars and more, built on [Unreal Engine](https://www.unrealengine.com/) (we now also have an experimental [Unity](https://unity3d.com/) release). It is open-source, cross platform, and supports software-in-the-loop simulation with popular flight controllers such as PX4 & ArduPilot and hardware-in-loop with PX4 for physically and visually realistic simulations. It is developed as an Unreal plugin that can simply be dropped into any Unreal environment. Similarly, we have an experimental release for a Unity plugin.
@@ -46,6 +66,8 @@ For complete list of changes, view our [Changelog](docs/CHANGELOG.md)
 
 ## How to Get It
 
+[![Build Status](https://travis-ci.org/Microsoft/AirSim.svg?branch=master)](https://travis-ci.org/Microsoft/AirSim)
+
 ### Windows
 * [Download binaries](https://github.com/Microsoft/AirSim/releases)
 * [Build it](https://microsoft.github.io/AirSim/build_windows)
@@ -57,7 +79,7 @@ For complete list of changes, view our [Changelog](docs/CHANGELOG.md)
 ### macOS
 * [Build it](https://microsoft.github.io/AirSim/build_linux)
 
-[![Build Status](https://travis-ci.org/Microsoft/AirSim.svg?branch=master)](https://travis-ci.org/Microsoft/AirSim)
+For more details, see the [use precompiled binaries](docs/use_precompiled.md) document. 
 
 ## How to Use It
 
@@ -138,7 +160,6 @@ Please take a look at [open issues](https://github.com/microsoft/airsim/issues) 
 * [More on AirSim design](https://microsoft.github.io/AirSim/design)
 * [More on code structure](https://microsoft.github.io/AirSim/code_structure)
 * [Contribution Guidelines](CONTRIBUTING.md)
-* [Trello Board](https://trello.com/b/1t2qCeaA/wishlist-by-community-for-community)
 
 ### Who is Using AirSim?
 
@@ -151,6 +172,11 @@ Join the AirSim group on [Facebook](https://www.facebook.com/groups/122583246753
 ## FAQ
 
 If you run into problems, check the [FAQ](https://microsoft.github.io/AirSim/faq) and feel free to post issues in the  [AirSim](https://github.com/Microsoft/AirSim/issues) repository.
+
+## Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
 
 ## License
 
